@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>倒计时和矩阵</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+        #matrix, #blank-matrix {
+            display: table;
+            margin-top: 20px;
+        }
+        td {
+            border: 1px solid #000;
+            padding: 20px;
+            text-align: center;
+        }
+        th {
+            border: 1px solid #000;
+            padding: 20px;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+        input {
+            width: 50px;
+            text-align: center;
+        }
+        #countdown {
+            font-size: 24px;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 20px;
+            display: none; /* Initially hidden */
+        }
+    </style>
+</head>
+<body>
+
+<div id="countdown">
+    剩余时间: <span id="days"></span>天 <span id="hours"></span>小时
+    <span id="minutes"></span>分钟 <span id="seconds"></span>秒
+</div>
+
+<div id="matrix">
+    <table>
+        <tr>
+            <th></th>
+            <th>a</th>
+            <th>b</th>
+            <th>c</th>
+            <th>d</th>
+            <th>e</th>
+            <th>f</th>
+        </tr>
+        <tr>
+            <th>a</th>
+            <td>1</td>
+            <td>1</td>
+            <td>0</td>
+            <td>1</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <th>b</th>
+            <td>1</td>
+            <td>1</td>
+            <td>0</td>
+            <td>0</td>
+            <td>1</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <th>c</th>
+            <td>0</td>
+            <td>0</td>
+            <td>1</td>
+            <td>1</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <th>d</th>
+            <td>1</td>
+            <td>0</td>
+            <td>1</td>
+            <td>1</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <th>e</th>
+            <td>0</td>
+            <td>1</td>
+            <td>0</td>
+            <td>0</td>
+            <td>1</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <th>f</th>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>1</td>
+        </tr>
+    </table>
+</div>
+<div id="result-container" style="display: none;">
+    <p>结果: <span id="result-text"></span></p>
+</div>
+
+<div id="blank-matrix" style="display: none;">
+    <table>
+        <tr>
+            <th></th>
+            <th>a</th>
+            <th>b</th>
+            <th>c</th>
+            <th>d</th>
+            <th>e</th>
+            <th>f</th>
+        </tr>
+        <tr>
+            <th>a</th>
+            <td><input type="text" maxlength="1" data-answer="1"></td>
+            <td><input type="text" maxlength="1" data-answer="1"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+            <td><input type="text" maxlength="1" data-answer="1"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+        </tr>
+        <tr>
+            <th>b</th>
+            <td><input type="text" maxlength="1" data-answer="1"></td>
+            <td><input type="text" maxlength="1" data-answer="1"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+            <td><input type="text" maxlength="1" data-answer="1"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+        </tr>
+        <tr>
+            <th>c</th>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+            <td><input type="text" maxlength="1" data-answer="1"></td>
+            <td><input type="text" maxlength="1" data-answer="1"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+        </tr>
+        <tr>
+            <th>d</th>
+            <td><input type="text" maxlength="1" data-answer="1"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+            <td><input type="text" maxlength="1" data-answer="1"></td>
+            <td><input type="text" maxlength="1" data-answer="1"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+        </tr>
+        <tr>
+            <th>e</th>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+            <td><input type="text" maxlength="1" data-answer="1"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+            <td><input type="text" maxlength="1" data-answer="1"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+        </tr>
+        <tr>
+            <th>f</th>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+            <td><input type="text" maxlength="1" data-answer="1"></td>
+        </tr>
+    </table>
+    <button id="submit">提交</button>
+    <div id="result">结果: 正确率 <span id="accuracy"></span>%</div>
+</div>
+
+<script>
+    // 倒计时30秒
+    var countdownTime = 30 * 1000; // 30秒（毫秒）
+    var countdownEndTime = new Date(new Date().getTime() + countdownTime);
+
+    function updateCountdown() {
+        var now = new Date();
+        var timeDiff = countdownEndTime - now;
+
+        if (timeDiff > 0) {
+            var seconds = Math.floor(timeDiff / 1000);
+
+            document.getElementById("days").textContent = 0; // 0天
+            document.getElementById("hours").textContent = 0; // 0小时
+            document.getElementById("minutes").textContent = Math.floor(seconds / 60);
+            document.getElementById("seconds").textContent = seconds % 60;
+        } else {
+            document.getElementById("countdown").textContent = "倒计时结束!";
+            document.getElementById("matrix").style.display = "none"; // 隐藏矩阵
+            document.getElementById("blank-matrix").style.display = "block"; // 显示空白矩阵
+        }
+    }
+
+    document.getElementById("submit").onclick = function() {
+        var inputs = document.querySelectorAll('#blank-matrix input');
+        var correctCount = 0;
+        inputs.forEach(input => {
+            if (input.value == input.getAttribute('data-answer')) {
+                correctCount++;
+            }
+        });
+        var accuracy = (correctCount / inputs.length) * 100;
+        document.getElementById("accuracy").textContent = accuracy.toFixed(2); // 保留两位小数
+        document.getElementById("result").style.display = "block"; // 显示结果
+    };
+
+    // 每秒更新一次
+    setInterval(updateCountdown, 1000);
+    updateCountdown(); // 立即执行一次
+    function processMatrix() {
+    // 获取矩阵数据
+    var matrixData = [];
+    var inputs = document.querySelectorAll('#blank-matrix input');
+    inputs.forEach(input => {
+        matrixData.push(input.value);
+    });
+
+    // 调用 euqiconcept_reduction.py 中的 dynamic_add_3() 函数
+    fetch('/process_matrix', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: new URLSearchParams({
+            'matrix-data': JSON.stringify(matrixData)
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        updateResult(JSON.stringify(data.result));
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+function updateResult(result) {
+    document.getElementById("result-text").textContent = result;
+    document.getElementById("result-container").style.display = "block";
+}
+
+function getCookie(name) {
+    // 获取 CSRF 令牌的代码
+}
+</script>
+
+</body>
+</html>
