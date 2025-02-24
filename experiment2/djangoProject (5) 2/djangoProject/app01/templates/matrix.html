@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>倒计时和矩阵</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        td {
+            border: 1px solid #000;
+            padding: 20px;
+            text-align: center;
+        }
+        th {
+            border: 1px solid #000;
+            padding: 20px;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+        input {
+            width: 50px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen font-sans">
+
+<!-- 添加隐藏的CSRF token字段 -->
+<input type="hidden" id="csrf-token" value="{{ csrf_token }}">
+
+
+<div id="countdown" class="text-2xl mb-5">
+    剩余时间: <span id="minutes"></span>分钟 <span id="seconds"></span>秒
+</div>
+
+<div id="original-content">
+    <div id="matrix" class="mb-5">
+        <table>
+            <tr>
+                <th></th>
+                <th>1</th>
+                <th>2</th>
+                <th>3</th>
+                <th>4</th>
+                <th>5</th>
+                <th>6</th>
+            </tr>
+            <tr>
+                <th>1</th>
+                <td>1</td>
+                <td>0</td>
+                <td>1</td>
+                <td>0</td>
+                <td>0</td>
+                <td>1</td>
+            </tr>
+            <tr>
+                <th>2</th>
+                <td>0</td>
+                <td>1</td>
+                <td>0</td>
+                <td>1</td>
+                <td>0</td>
+                <td>0</td>
+            </tr>
+            <tr>
+                <th>3</th>
+                <td>1</td>
+                <td>0</td>
+                <td>1</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+            </tr>
+            <tr>
+                <th>4</th>
+                <td>0</td>
+                <td>1</td>
+                <td>0</td>
+                <td>1</td>
+                <td>0</td>
+                <td>0</td>
+            </tr>
+            <tr>
+                <th>5</th>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>1</td>
+                <td>1</td>
+            </tr>
+            <tr>
+                <th>6</th>
+                <td>1</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>1</td>
+                <td>1</td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="result" class="text-xl">
+        概念约简: <span id="accuracy"></span>
+    </div>
+</div>
+
+<div id="blank-matrix" class="hidden">
+    <table class="mb-5">
+        <tr>
+            <th></th>
+            <th>1</th>
+            <th>2</th>
+            <th>3</th>
+            <th>4</th>
+            <th>5</th>
+            <th>6</th>
+        </tr>
+        <tr>
+            <th>1</th>
+            <td><input type="text" maxlength="1" data-answer="1"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+            <td><input type="text" maxlength="1" data-answer="1"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+            <td><input type="text" maxlength="1" data-answer="1"></td>
+        </tr>
+        <tr>
+            <th>2</th>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+            <td><input type="text" maxlength="1" data-answer="1"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+            <td><input type="text" maxlength="1" data-answer="1"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+        </tr>
+        <tr>
+            <th>3</th>
+            <td><input type="text" maxlength="1" data-answer="1"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+            <td><input type="text" maxlength="1" data-answer="1"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+        </tr>
+        <tr>
+            <th>4</th>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+            <td><input type="text" maxlength="1" data-answer="1"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+            <td><input type="text" maxlength="1" data-answer="1"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+        </tr>
+        <tr>
+            <th>5</th>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+            <td><input type="text" maxlength="1" data-answer="1"></td>
+            <td><input type="text" maxlength="1" data-answer="1"></td>
+        </tr>
+        <tr>
+            <th>6</th>
+            <td><input type="text" maxlength="1" data-answer="1"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+            <td><input type="text" maxlength="1" data-answer="0"></td>
+            <td><input type="text" maxlength="1" data-answer="1"></td>
+            <td><input type="text" maxlength="1" data-answer="1"></td>
+        </tr>
+    </table>
+    <button id="compare" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">比较结果</button>
+    <div id="comparison-result" class="mt-5 text-xl hidden"></div>
+</div>
+
+<script>
+    var countdownTime = 17 * 1000; // 30秒（毫秒）
+    var countdownEndTime = new Date(new Date().getTime() + countdownTime);
+
+    function updateCountdown() {
+        var now = new Date();
+        var timeDiff = countdownEndTime - now;
+
+        if (timeDiff > 0) {
+            var seconds = Math.floor(timeDiff / 1000);
+            document.getElementById("minutes").textContent = Math.floor(seconds / 60);
+            document.getElementById("seconds").textContent = seconds % 60;
+        } else {
+            document.getElementById("countdown").textContent = "倒计时结束!";
+            submitAndTransition(); // 倒计时结束时自动提交并跳转
+        }
+    }
+
+    function submitAnswer(transition = false) {
+        var matrix = [1,0,1,0,0,1 ,0,1,0,1,0,0, 1,0,1,0,0,0, 0,1,0,1,0,0, 0,0,0,0,1,1, 1,0,0,0,1,1];
+        var formattedMatrix = matrix.reduce((acc, val, index) => {
+              acc.push(val);
+              if ((index + 1) % 6 === 0 && index < matrix.length - 1) {
+                  acc.push(']');
+              }
+             return acc;
+        }, []).join('');
+        fetch('/process_matrix/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: 'matrix=' + encodeURIComponent(formattedMatrix)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+            } else {
+                // 将结果格式化为带大括号的形式
+                const formattedResult = data.result.map(group => `{${group.join(',')}}`).join(' ');
+                document.getElementById("accuracy").textContent = formattedResult;
+
+                if (transition) {
+                    // 倒计时结束时执行跳转
+                    document.getElementById("original-content").classList.add("hidden");
+                    document.getElementById("blank-matrix").classList.remove("hidden");
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('处理矩阵时出现错误,请重试。');
+        });
+    }
+
+    function submitAndTransition() {
+        submitAnswer(true);
+    }
+
+    function compareResults() {
+        var inputs = document.querySelectorAll('#blank-matrix input');
+        var correctCount = 0;
+        var totalCount = inputs.length;
+
+        inputs.forEach(function(input) {
+            if (input.value === input.dataset.answer) {
+                correctCount++;
+            }
+        });
+
+        var accuracy = (correctCount / totalCount * 100).toFixed(2);
+        document.getElementById("comparison-result").classList.remove("hidden");
+        document.getElementById("comparison-result").textContent = "正确率: " + accuracy + "%";
+        // 自动保存准确率到数据库
+    saveAccuracyToDB(accuracy);
+    }
+function saveAccuracyToDB(accuracy) {
+    fetch('/save_accuracy/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': document.getElementById("csrf-token").value  // 使用从模板中获取的 CSRF token
+        },
+        body: 'accuracy=' + encodeURIComponent(accuracy)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            console.error(data.error);
+            alert('保存准确率时出现错误，请重试。');
+        } else {
+            console.log(data.message); // 可选择是否显示保存成功的消息
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('保存准确率时出现错误，请重试。');
+    });
+}
+    document.getElementById("compare").onclick = compareResults;
+
+    // 每秒更新一次
+    setInterval(updateCountdown, 1000);
+    updateCountdown(); // 立即执行一次
+    submitAnswer(); // 页面加载时立即显示概念约简结果
+</script>
+
+</body>
+</html>
